@@ -378,7 +378,6 @@
     <None Include="scripts\_references.js" />
     <Content Include="scripts\sortable.js" />
     <Content Include="Templates\Header.cshtml" />
-    <Content Include="test.html" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />

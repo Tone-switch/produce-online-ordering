@@ -60,39 +60,39 @@ function AddItemToOrderGuide(unit, code, groupID, guideName) {
 }
 
 
-$('#AddToGuide').click(function () {
-    $('#AddToGuideModal').modal('show');
-})
+    $('#AddToGuide').click(function () {
+        $('#AddToGuideModal').modal('show');
+    })
 
-$('#AddNewGuideModal').on('shown.bs.modal', function () {
-    $('#inputForGuideName').focus();
-})
+    $('#AddNewGuideModal').on('shown.bs.modal', function () {
+        $('#inputForGuideName').focus();
+    })
 
-$('#AddToGuideModal').on('shown.bs.modal', function (e) {
+    $('#AddToGuideModal').on('shown.bs.modal', function (e) {
 
-    $('#modalContent a').click(function () {
-        $('#modalContent a').removeClass('active');
-        $(this).addClass('active');
+        $('#modalContent a').click(function () {
+            $('#modalContent a').removeClass('active');
+            $(this).addClass('active');
+        });
     });
-});
 
-$('#RecoverGuideModal').on('shown.bs.modal', function (e) {
+    $('#RecoverGuideModal').on('shown.bs.modal', function (e) {
 
-    $('#RGModalBody a').click(function () {
-        $('#RGModalBody a').removeClass('active');
-        $(this).addClass('active');
+        $('#RGModalBody a').click(function () {
+            $('#RGModalBody a').removeClass('active');
+            $(this).addClass('active');
+        });
     });
-});
 
-$('#btnRecover').click(function () {
-    $('#RGModalBody a').each(function () {
-        if ($(this).attr('class') === 'list-group-item active')
-        {
-            var id = $(this).data('value');
-            RecoverGuide(id);
-        }
-    });
-})
+    $('#btnRecover').click(function () {
+        $('#RGModalBody a').each(function () {
+            if ($(this).attr('class') === 'list-group-item active')
+            {
+                var id = $(this).data('value');
+                RecoverGuide(id);
+            }
+        });
+    })
 
 function RecoverGuide(id) {
     $.ajax({
