@@ -1,0 +1,66 @@
+﻿@using OnlineOrdering.WebApi
+<!DOCTYPE html>
+<html>
+<head>
+
+
+    <title>ProfitSense Online Ordering</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        .header_common {
+            padding: 10px;
+            border-color: #000000;
+            margin-top: 10px;
+            background-color: white;
+            box-shadow: 0 0 2px rgba(0,0,0,0.12),0 2px 2px rgba(0,0,0,0.24);
+            border-radius: 10px;
+        }
+
+        body {
+            background-color: #ededed;
+        }
+
+        p {
+            margin-bottom: 0px;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container header_common">
+        <div class="row">
+            <div class="col-md-4 text-center" style="padding-top:34px">
+
+                <h4 class="text-success"> Bay Cities Produce Co. </h4>
+                <p> 2109 Williams Street </p>
+                <p> San Leandro, CA 94577 </p>
+                <p> Fax (510) 352-4704 </p>
+            </div>
+
+            <div class="col-md-4 text-center">
+                <img src="~/images/bcplogo.png" width="300" height="180" />
+            </div>
+            <div class="col-md-4 text-center" style="padding-top:50px">
+                <br>
+                <p><h4 class="text-success" style="font-size:17px"><span style="color:black" class="glyphicon glyphicon-phone-alt"></span> &nbsp; Order Desk (510) 346-4943</h4></p>
+            </div>
+
+            <!--    Nav-links start here        -->
+            <div class="col-md-offset-3">
+                <ul id="TopNav" style="margin-left:60px" class="nav navbar-nav">
+
+                    <li><a href="#"><span id="Home" class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Home</a></li>
+                    <li><a href="#"><span id="User" class="glyphicon glyphicon-user"></span>&nbsp;&nbsp; @Session["UserName"]</a></li>
+                    <li id="ViewCurrentOrder"><a href="#"><i id="cartHeader" class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;&nbsp;View Current Order&nbsp;&nbsp;<span id="CurrentOrder" class="badge"></span></a></li>
+                    <li><a id="LogOut" href="#LogOut"><span id="LogOff" class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;Log Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+@RenderBody()
+
+

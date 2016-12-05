@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaycitiesOnlineOrdering.WebApi", "OnlineOrdering.WebApi\BaycitiesOnlineOrdering.WebApi.csproj", "{5DA43987-D8E4-4C58-B2B6-9EB0D3323105}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5DA43987-D8E4-4C58-B2B6-9EB0D3323105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DA43987-D8E4-4C58-B2B6-9EB0D3323105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DA43987-D8E4-4C58-B2B6-9EB0D3323105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DA43987-D8E4-4C58-B2B6-9EB0D3323105}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

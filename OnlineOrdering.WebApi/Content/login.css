@@ -1,0 +1,13 @@
+﻿
+.panel-title{
+    font-size:18px;
+    font-family: 'Trirong', serif;
+}
+
+.panel{
+     box-shadow : 0 0 2px rgba(0,0,0,0.12),0 2px 2px rgba(0,0,0,0.24);
+}
+
+.panel-heading{
+    background-image:-webkit-linear-gradient(top, #5cb85c 0%, #419641 100%) !important;
+}
