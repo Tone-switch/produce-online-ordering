@@ -340,7 +340,7 @@ function AddItemToCart() {
                 
                 var attribute = $(this).attr('class');
             
-                if (attribute === 'list-group-item list-group-item-action text-center active') {
+                if (attribute === 'list-group-item list-group-item-action text-center og active') {
                     selectionMade = true;
                     guideName = $(this).text();
                     groupID = $(this).data('value');
@@ -522,17 +522,6 @@ function ShowMasterOrderGuide(groupid) {
             HideCartControls();
             HideOrderControls();
             ShowOrderGuideControls();
-
-            if (groupid == 286) {
-                $('#DeleteGuide').attr('disabled', true);
-                $('#SortGuide').attr('disabled', true);
-                $('.DelFrmGuide').removeAttr('href');
-            }
-            else {
-                $('#DeleteGuide').attr('disabled', false);
-                $('#SortGuide').attr('disabled', false);
-            }
-
             HideOrderConfrimation();
             HideEmptyCartMsg();
             res.container.find(res.loader).remove();
@@ -600,6 +589,14 @@ function renumber_table(tableID) {
 }
 
 $('#SortGuide').click(function () {
+
+    var groupid = $('#GroupID').val();
+
+    if (groupid == 286) {
+        ShowErrorMsg('This Guide Cannot Be Sorted.');
+        return;
+    };
+
     var table = $('#OrderGuideTable').DataTable();
 
     var data = table
@@ -665,7 +662,13 @@ $('#SaveSort').click(function () {
 
 
 $('#DeleteGuide').click(function () {
+   
+    var groupid = $('#GroupID').val();
 
+    if (groupid == 286) {
+        ShowErrorMsg('This Guide Cannot Be Deleted.');
+        return;
+    };
     $('#DelGuideConfirmation').modal('show');
 
 });
@@ -771,8 +774,6 @@ function GetOrderGuides() {
 
                     $.each(data, function (i, orderguide) {
                        
-                        //$('#OrderGuides').append('<a class="list-group-item list-group-item-action text-center" data-value="' + orderguide.groupID + '" href = "javascript:ShowMasterOrderGuide(' +
-                        //                  '\'' + orderguide.groupID + '\'' + ');">' + orderguide.name + '<span class="glyphicon glyphicon-list pull-left" aria-hidden="true"></span></a>');
                         $('#OrderGuides').append('<div class="input-group"><span class="input-group-addon"><i class="fa fa-list" aria-hidden="true"></i></span>' +
                                                 '<a class="list-group-item list-group-item-action text-center og" data-value="' + orderguide.groupID + '" href = "javascript:ShowMasterOrderGuide(' + 
                                                 '\'' + orderguide.groupID + '\'' + ');">' + orderguide.name + '</div>');
