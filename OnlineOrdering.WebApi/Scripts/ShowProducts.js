@@ -5,6 +5,10 @@ var _GlobVar = {
     firstLogin: true,
     GuideItem: $(),
     CartItem: $(),
+    CurrentGuideId: function () {
+        var id = $('#GroupID').val();
+        return id;
+    }
 };
 
 
@@ -187,7 +191,7 @@ $(document).ready(function () {
     });
 
     $('#DeleteOK').click(function () {
-        var groupid = $('#GroupID').val();
+        var groupid = _GlobVar.CurrentGuideId();
         DeleteOrderGuide(groupid);
         GetProductList(_GlobVar.firstCategory);
     });
@@ -493,7 +497,7 @@ function ShowEmptyOrderGuideMsg()
 
 function ShowMasterOrderGuide(groupid) {
 
-    $('#GroupID').val(groupid);
+    $('#GroupID').val(groupid); //set groupID value
     $.ajax({
         type: 'GET',
         url: '/api/OrderGuides/ShowMasterOrderGuide/' + groupid,
@@ -590,7 +594,7 @@ function renumber_table(tableID) {
 
 $('#SortGuide').click(function () {
 
-    var groupid = $('#GroupID').val();
+    var groupid = _GlobVar.CurrentGuideId()
 
     if (groupid == 286) {
         ShowErrorMsg('This Guide Cannot Be Sorted.');
@@ -620,14 +624,14 @@ $('#SortGuide').click(function () {
 $('#SaveSort').click(function () {
     var SortTable = [];
     var sortRow = $();
-    var guideID = $('#GroupID').val();
+    var guideID = _GlobVar.CurrentGuideId();
 
     $('#SortTable tbody tr').each(function () {
         sortRow = {
             Code: $(this).closest('tr').find('td').eq(1).text(),
             Description: $(this).closest('tr').find('td').eq(2).text(),
             Unit: $(this).closest('tr').find('td').eq(4).text(),
-            groupID: $('#GroupID').val(),
+            groupID: _GlobVar.CurrentGuideId(),
             Qty: 0,
             Comment: '',
             sortOrder: $(this).closest('tr').find('td').eq(0).find(':input[type="number"]').val(),
@@ -663,7 +667,7 @@ $('#SaveSort').click(function () {
 
 $('#DeleteGuide').click(function () {
    
-    var groupid = $('#GroupID').val();
+    var groupid = _GlobVar.CurrentGuideId();
 
     if (groupid == 286) {
         ShowErrorMsg('This Guide Cannot Be Deleted.');
@@ -680,7 +684,7 @@ $('#ProductsTable').on('draw.dt', function () {
 
 $('#OrderGuideTable').on('draw.dt', function () {
    
-    var groupID = $('#GroupID').val();
+    var groupID = _GlobVar.CurrentGuideId();
 
     $('.DelFrmGuide').on('click', function (e) {
 
@@ -1143,7 +1147,7 @@ function GetOrderGuides() {
 
 
     $('#MoveToSession').on('click', function(groupID) {
-        groupID = $('#GroupID').val();
+        groupID = _GlobVar.CurrentGuideId();
         var merge = 0;
         $.ajax({
             type: 'POST',
@@ -1173,7 +1177,7 @@ function GetOrderGuides() {
 
 
     $('#MergeToSession').on('click',function() {
-        var groupID = $('#GroupID').val();
+        var groupID = _GlobVar.CurrentGuideId();
         var merge = 1;
         $.ajax({
             type: 'POST',
