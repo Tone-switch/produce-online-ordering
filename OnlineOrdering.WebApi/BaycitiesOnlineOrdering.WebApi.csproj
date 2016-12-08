@@ -173,7 +173,6 @@
     <Content Include="images\bcplogo.png" />
     <Content Include="images\emptyCart.ico" />
     <Content Include="images\hourglass.gif" />
-    <Content Include="images\list.png" />
     <Content Include="images\MasterListIcon.gif" />
     <Content Include="images\MyOrderIcon.gif" />
     <Content Include="images\notfound.png" />

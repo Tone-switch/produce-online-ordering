@@ -868,56 +868,56 @@ function GetOrderGuides() {
 
 function GetAllProducts() {
 
-    HideRightBody();
+   // HideRightBody();
 
     $('html, body').animate({ scrollTop: 200 }, 'fast');
 
-        $.ajax({
-            type: 'GET',
-            url: '/api/Products/GetAllProducts/',
-            beforeSend: function() {
-                res.container.append(res.loader);
-            },
-            success: function(data) {
-                res.container.find(res.loader).remove();
-                $('.loader').attr('style', 'display:none');
-                HideCartControls();
-                HideOrderGuideControls();
-                HideOrderControls();
-                ShowPtableControls();
-                HideOrderConfrimation();
-                HideEmptyOrderGuideMsg();
-                HideEmptyCartMsg();
-                $('#ProductsTable')
-                    .DataTable({
-                        data: data,
-                        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, " All"]],
-                        "bDestroy": true,
-                        "pagingType": "full_numbers",
-                        'columnDefs': [
-                                      { className: 'tdNoStyle', 'targets': [3, 4, 5] }
-                                      ],
-                        columns: [
-                            { 'data': 'Product_Code' },
-                            { 'data': 'Description' },
-                            { 'data': 'Pk_Wt_Sz', 'bSortable': false },
-                            { 'data': 'CaseString', 'bSortable': false },
-                            { 'data': 'EachString', 'bSortable': false },
-                            { 'data': 'PoundString', 'bSortable': false },
-                        ]
-                    });
-                $('#pLabel').text('All Products (Complete List)');
-                EnableToolTip();
-            },
-            error: function() {
-                res.container.find(res.loader).remove();
-                $('.loader').attr('style', 'display:none');
-                ShowErrorMsg('Unable to fetch all products categories. Please Try Again.');
-            }
-        }).pipe(function () {
-            $('#RightBody').fadeIn(300);
-        });
-    }
+    $.ajax({
+        type: 'GET',
+        url: '/api/Products/GetAllProducts/',
+        beforeSend: function () {
+            res.container.append(res.loader);
+        },
+        success: function (data) {
+            res.container.find(res.loader).remove();
+            $('.loader').attr('style', 'display:none');
+            HideCartControls();
+            HideOrderGuideControls();
+            HideOrderControls();
+            ShowPtableControls();
+            HideOrderConfrimation();
+            HideEmptyOrderGuideMsg();
+            HideEmptyCartMsg();
+            $('#ProductsTable')
+                .DataTable({
+                    data: data,
+                    "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, " All"]],
+                    "bDestroy": true,
+                    "pagingType": "full_numbers",
+                    "deferRender": true,
+                    'columnDefs': [
+                                  { className: 'tdNoStyle', 'targets': [3, 4, 5] }
+                                  ],
+                    columns: [
+                        { 'data': 'Product_Code' },
+                        { 'data': 'Description' },
+                        { 'data': 'Pk_Wt_Sz', 'bSortable': false },
+                        { 'data': 'CaseString', 'bSortable': false },
+                        { 'data': 'EachString', 'bSortable': false },
+                        { 'data': 'PoundString', 'bSortable': false },
+                    ]
+                });
+           // $('#RightBody').fadeIn(300);
+            $('#pLabel').text('All Products (Complete List)');
+            EnableToolTip();
+        },
+        error: function () {
+            res.container.find(res.loader).remove();
+            $('.loader').attr('style', 'display:none');
+            ShowErrorMsg('Unable to fetch all products. Please Try Again.');
+        }
+    });
+};
 
     function EnableToolTip() {
         $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
@@ -1132,6 +1132,8 @@ function GetAllProducts() {
 
     function GetProductList(category) {
 
+        $('html, body').animate({ scrollTop: 200 }, 'fast');
+
         HideRightBody();
 
         $('#Categories a').each(function () {
@@ -1141,8 +1143,6 @@ function GetAllProducts() {
                 $('#pLabel').attr('style', 'block');
             }
         });
-
-        $('html, body').animate({ scrollTop: 200 }, 'fast');
 
         $.ajax({
             type: 'GET',
@@ -1189,7 +1189,7 @@ function GetAllProducts() {
                 ShowErrorMsg('Unable to fetch product list by current category. Please Try Again.');
             }
         }).pipe(function () {
-            $('#RightBody').fadeIn(300);
+            $('#RightBody').fadeIn(500);
         });
     };
 
@@ -1439,10 +1439,10 @@ function GetAllProducts() {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(CurrentOrder),
             url: '/api/Cart/UpdateCart/',
-            beforeSend: function() {
+            beforeSend: function () {
                 res.container.append(res.loader);
             },
-            success: function() {
+            success: function () {
                 res.container.find(res.loader).remove();
                 $('.loader').attr('style', 'display:none');
 
@@ -1456,7 +1456,7 @@ function GetAllProducts() {
                     return false;
                 }
 
-                $('#Cart tbody tr') .each(function() {
+                $('#Cart tbody tr').each(function () {
                     var quantity = Number($(this).find('#quantity').val());
                     if (quantity <= 0) {
                         $(this).remove();
@@ -1536,18 +1536,17 @@ function GetAllProducts() {
                         grandTotal += eachTotal;
                     });
                     $('#Total').text('$ ' + grandTotal.toFixed(2));
-                }
+                };
 
                 var rCount = $('#Cart tbody tr').length;
                 $('#CurrentOrder').text(rCount);
+                FadeInRightBody();
             },
-            error: function() {
+            error: function () {
                 res.container.find(res.loader).remove();
                 $('.loader').attr('style', 'display:none');
                 ShowErrorMsg('Network Error. Please Try again.');
             }
-        }).pipe(function () {
-            FadeInRightBody();
         });
     });
 
