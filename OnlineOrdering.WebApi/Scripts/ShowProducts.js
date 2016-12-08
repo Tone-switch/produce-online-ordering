@@ -1,27 +1,50 @@
 ﻿
-var _GlobVar = {
-    firstCategory : $(),
-    mousePosn: { x: -1, y: -1 },
-    firstLogin: true,
-    GuideItem: $(),
-    CartItem: $(),
-    CurrentGuideId: function () {
-        var id = $('#GroupID').val();
-        return id;
-    }
-};
+    var _GlobVar = {
+        firstCategory : $(),
+        mousePosn: { x: -1, y: -1 },
+        firstLogin: true,
+        GuideItem: $(),
+        CartItem: $(),
+        priceStatus: function () {
+            var Status = $('#Cart').data('value');
+            return Status;
+        },
+        CurrentGuideId: function () {
+            var id = $('#GroupID').val();
+            return id;
+        },
+        ShowWelcomeMsg: function () {
+            $('#WelcomeMsg').css('display', 'block');
+            HideOrderGuideControls();
+            HidePtableControls();
+            $('#pLabel').hide();
+        },
+        HideWelcomeMsg: function () {
+            $('#WelcomeMsg').css('display', 'none');
+        }
+    };
 
 
-var res = {
-    loader: $('<div />', { class: 'loader' }),
-    container: $('.container')
-};
+    var res = {
+        loader: $('<div />', { class: 'loader' }),
+        container: $('.container')
+    };
+
+    function HideRightBody() {
+        $('#RightBody').css('display', 'none');
+        $('#CartControls').css('display', 'none');
+    };
+
+    function FadeInRightBody() {
+        $('#RightBody').fadeIn(500);
+        $('#CartControls').fadeIn(500);
+    };
 
 
-$(document).mousemove(function (event) {
-    _GlobVar.mousePosn.x = event.pageX;
-    _GlobVar.mousePosn.y = event.pageY;
-});
+    //$(document).mousemove(function (event) {
+    //    _GlobVar.mousePosn.x = event.pageX;
+    //    _GlobVar.mousePosn.y = event.pageY;
+    //});
 
 function AddItemToOrderGuide(unit, code, groupID, guideName) {
 
@@ -89,14 +112,15 @@ function AddItemToOrderGuide(unit, code, groupID, guideName) {
     });
 
     $('#btnRecover').click(function () {
+        var id = '';
         $('#RGModalBody a').each(function () {
-            if ($(this).attr('class') === 'list-group-item active')
-            {
-                var id = $(this).data('value');
-                RecoverGuide(id);
+            if ($(this).attr('class') === 'list-group-item active') {
+                id = $(this).data('value');
             }
         });
-    })
+        RecoverGuide(id);
+        _GlobVar.ShowWelcomeMsg();
+    });
 
 function RecoverGuide(id) {
     $.ajax({
@@ -132,7 +156,11 @@ function HighlightGuide(id) {
 };
 
 $(document).ajaxStart(function () {
-   
+
+    if (_GlobVar.firstLogin == false) {
+        _GlobVar.HideWelcomeMsg();
+    }
+
     $.ajax({
         type: 'GET',
         url: '/api/OrderGuides/GetSession/',
@@ -163,9 +191,12 @@ $(document).ready(function () {
     $.getScript('scripts/browser.js', function () {
     });
 
+    HidePtableControls();
     GetFirstCategory();
+    _GlobVar.firstLogin = false;
     GetOrderGuides();
     AddItemToCart();
+    $('#leftNav').fadeIn(1000);
 
     $('#ChooseGuide').click(function () {
 
@@ -193,7 +224,7 @@ $(document).ready(function () {
     $('#DeleteOK').click(function () {
         var groupid = _GlobVar.CurrentGuideId();
         DeleteOrderGuide(groupid);
-        GetProductList(_GlobVar.firstCategory);
+        _GlobVar.ShowWelcomeMsg();
     });
     
 });
@@ -296,6 +327,7 @@ function CreateNewOrderGuide(name) {
 
 }
 
+
 function GetFirstCategory() {
     $.ajax({
         type: 'GET',
@@ -311,7 +343,7 @@ function GetFirstCategory() {
             ShowErrorMsg('Unable to fetch product categories. Please Try Again.');
         }
     }).pipe(function () {
-        GetProductList(_GlobVar.firstCategory);
+        $('#WelcomeMsg').fadeIn(1000);
     });
 
 }
@@ -426,10 +458,9 @@ function HideLeftNavbar() {
 function ShowCartControls() {
     $('#Cart').show();
     ShowSessionCartControls();
-    $('#CartMsg').show();
     $('#hideCartMsg').click(function () {
         $('#CartMsg').fadeOut(400, function () {
-            $('#CartMsg').attr({ style: 'display:none', });
+            $('#CartMsg').attr({ style: 'display:none' });
         });
     });
 }
@@ -497,7 +528,12 @@ function ShowEmptyOrderGuideMsg()
 
 function ShowMasterOrderGuide(groupid) {
 
+    $('html, body').animate({ scrollTop: 200 }, 'fast');
+
+    HideRightBody();
+
     $('#GroupID').val(groupid); //set groupID value
+
     $.ajax({
         type: 'GET',
         url: '/api/OrderGuides/ShowMasterOrderGuide/' + groupid,
@@ -558,6 +594,9 @@ function ShowMasterOrderGuide(groupid) {
             $('.loader').attr('style', 'display:none');
             ShowErrorMsg('Unable to fetch current Order Guide. Please Try Again.');
         }
+    }).pipe(function () {
+        $('#OrderGuideTable').css('width', '100%');
+        $('#RightBody').fadeIn(500);
     });
 }
 
@@ -749,9 +788,11 @@ function GetOrderGuides() {
         type: 'GET',
         url: '/api/OrderGuides/GetOrderGuides/',
         success: function (data) {
+
             $('#OrderGuides a').remove();
             $('#OrderGuides li').remove();
-     
+            $('#OrderGuides .input-group-addon').remove();
+            
             if (data.length < 1) {
                 $('#Settings').remove();
                 $('#OrderGuides').append('<div id="Settings" class="panel panel-primary"><div class="panel-heading options"><h4 class="panel-title "> ' +
@@ -777,7 +818,6 @@ function GetOrderGuides() {
                     $('#modalContent').empty();
 
                     $.each(data, function (i, orderguide) {
-                       
                         $('#OrderGuides').append('<div class="input-group"><span class="input-group-addon"><i class="fa fa-list" aria-hidden="true"></i></span>' +
                                                 '<a class="list-group-item list-group-item-action text-center og" data-value="' + orderguide.groupID + '" href = "javascript:ShowMasterOrderGuide(' + 
                                                 '\'' + orderguide.groupID + '\'' + ');">' + orderguide.name + '</div>');
@@ -818,12 +858,19 @@ function GetOrderGuides() {
         error: function() {
             ShowErrorMsg('Unable to fetch Order Guides. Please Try Again.');
         }
+    }).pipe(function () {
+        $('#OrderGuides').css('display', 'none');
+        $('#OrderGuides').slideDown(300);
     });
 }
 
 
 
-    function GetAllProducts() {
+function GetAllProducts() {
+
+    HideRightBody();
+
+    $('html, body').animate({ scrollTop: 200 }, 'fast');
 
         $.ajax({
             type: 'GET',
@@ -867,6 +914,8 @@ function GetOrderGuides() {
                 $('.loader').attr('style', 'display:none');
                 ShowErrorMsg('Unable to fetch all products categories. Please Try Again.');
             }
+        }).pipe(function () {
+            $('#RightBody').fadeIn(300);
         });
     }
 
@@ -1070,41 +1119,38 @@ function GetOrderGuides() {
                 $('#oc').attr({ class: 'glyphicon glyphicon-exclamation-sign' })
                 $('#Oconfirmation').html('Network Error. Order not submitted. Please try again.');
             }
+        }).pipe(function () {
+            FadeInRightBody();
         });
     }
 
-    $('#placeOrder').click(function() {
+    $('#placeOrder').click(function () {
+        HideRightBody();
         $('html, body').animate({ scrollTop: 0 }, 'fast');
         OrderSubmission();
     });
 
     function GetProductList(category) {
 
+        HideRightBody();
+
         $('#Categories a').each(function () {
             var categCode = $(this).data('value');
-            if (categCode === category)
-            {
+            if (categCode === category) {
                 $('#pLabel').text($(this).text());
                 $('#pLabel').attr('style', 'block');
             }
-        })
+        });
 
-        if (_GlobVar.firstLogin === true){
-            $('html, body').animate({ scrollTop: 0 }, 'fast');
-            _GlobVar.firstLogin = false;
-        }
-        else {
-            $('html, body').animate({ scrollTop: 200 }, 'fast');
-            _GlobVar.firstLogin = false;
-        }
+        $('html, body').animate({ scrollTop: 200 }, 'fast');
 
         $.ajax({
             type: 'GET',
             url: '/api/Products/GetProductList?category=' + category,
-            beforeSend: function() {
+            beforeSend: function () {
                 res.container.append(res.loader);
             },
-          
+
             success: function (data) {
                 res.container.find(res.loader).remove();
                 $('.loader').attr('style', 'display:none');
@@ -1119,7 +1165,7 @@ function GetOrderGuides() {
                 $('#ProductsTable').DataTable({
                     'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, " All"]],
                     'columnDefs': [
-                        { className:'tdNoStyle', 'targets': [3,4,5]}
+                        { className: 'tdNoStyle', 'targets': [3, 4, 5] }
                     ],
                     data: data,
                     'bDestroy': true,
@@ -1127,7 +1173,7 @@ function GetOrderGuides() {
                     columns: [
                         { 'data': 'ProdCode' },
                         { 'data': 'Description' },
-                        { 'data': 'Pk_Wt_Sz' , 'bSortable': false },
+                        { 'data': 'Pk_Wt_Sz', 'bSortable': false },
                         { 'data': 'CaseString', 'bSortable': false },
                         { 'data': 'EachString', 'bSortable': false },
                         { 'data': 'PoundString', 'bSortable': false },
@@ -1137,21 +1183,30 @@ function GetOrderGuides() {
                 AddItem();
                 EnableToolTip();
             },
-            error: function() {
+            error: function () {
                 res.container.find(res.loader).remove();
                 $('.loader').attr('style', 'display:none');
                 ShowErrorMsg('Unable to fetch product list by current category. Please Try Again.');
             }
+        }).pipe(function () {
+            $('#RightBody').fadeIn(300);
         });
-    }
+    };
 
 
-    $('#MoveToSession').on('click', function(groupID) {
+    $('#MoveToSession').on('click', function (groupID) {
+
+        $('#RightBody').css('display', 'none');
+
         groupID = _GlobVar.CurrentGuideId();
         var merge = 0;
+
         $.ajax({
             type: 'POST',
             url: '/api/OrderGuides/MoveGuideToSession/' + groupID + '/' + merge,
+            beforeSend: function () {
+                res.container.append(res.loader);
+            },
             success: function(data) {
                 GetSessionCart();
                 HideOrderGuideControls();
@@ -1164,25 +1219,31 @@ function GetOrderGuides() {
                     });
                 $('#CartMsg')
                     .append('<button id="hideCartMsg" type="button" class="close" aria-hidden="true"> × </button>');
-                ShowCartControls();
-                HideOrderGuideControls();
             },
             error: function() {
                 res.container.find(res.loader).remove();
                 $('.loader').attr('style', 'display:none');
                 ShowErrorMsg('Unable to use this guide now. Please Try Again.');
-            }
+            },
+        }).pipe(function () {
+            FadeInRightBody();
         });
     });
 
 
-    $('#MergeToSession').on('click',function() {
+    $('#MergeToSession').on('click', function () {
+
+        $('#RightBody').css('display', 'none');
+
         var groupID = _GlobVar.CurrentGuideId();
         var merge = 1;
+
         $.ajax({
             type: 'POST',
             url: '/api/OrderGuides/MoveGuideToSession/' + groupID + '/' + merge,
-
+            beforeSend: function () {
+                res.container.append(res.loader);
+            },
             success: function(data) {
                 GetSessionCart();
                 HideOrderGuideControls();
@@ -1202,26 +1263,31 @@ function GetOrderGuides() {
                 $('.loader').attr('style', 'display:none');
                 ShowErrorMsg('Unable to use this guide now. Please Try Again.');
             }
+        }).pipe(function () {
+            FadeInRightBody();
         });
     });
 
 
     $('#ViewCurrentOrder').on('click', function () {
-        var priceStatus = $('#Cart').data('value');
 
-        if (priceStatus === 'withPrice') {
+        HideRightBody();
+
+        if (_GlobVar.priceStatus() === 'withPrice') {
             $('#extendedHeader').replaceWith('<th id ="delColumn">Remove</th>');
             $('#extd').remove();
-        }
+        };
 
         HideOrderGuideControls();
         HidePtableControls();
-        ShowCartControls();
-        $('#CartMsg').hide();
         GetSessionCart();
+        $('#CartMsg').hide();
         HideCheckOutControls();
         HideOrderControls();
         HideOrderConfrimation();
+
+        FadeInRightBody();
+
     });
 
     function UpdateWeight() {
@@ -1236,9 +1302,9 @@ function GetOrderGuides() {
     }
 
     function ShowEmptyCartMsg() {
-        $('#emptyCart').attr('style', 'display:block');
         $('#Cart').hide();
         $('#CartMsg').hide();
+        $('#emptyCart').fadeIn(400);
     }
 
     function HideEmptyCartMsg() {
@@ -1251,9 +1317,7 @@ function GetOrderGuides() {
         $('#pLabel').text('Current Order');
         $('#pLabel').show();
 
-        var priceStatus = $('#Cart').data('value');
-
-        if (priceStatus === 'withPrice') {
+        if (_GlobVar.priceStatus() === 'withPrice') {
             $('#Footer > tr').replaceWith('<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
             $('#extendedHeader').remove();
             $('#extd').remove();
@@ -1262,16 +1326,16 @@ function GetOrderGuides() {
         $.ajax({
             type: 'GET',
             url: '/api/OrderGuides/GetSessionCart/',
-            beforeSend: function() {
+            beforeSend: function () {
                 res.container.append(res.loader);
             },
-            success: function(OrderGuides) {
+            success: function (OrderGuides) {
                 res.container.find(res.loader).remove();
                 $('.loader').attr('style', 'display:none');
 
                 if (OrderGuides.length > 0) {
                     $('#Cart tbody > tr').remove();
-                    if (priceStatus === 'withPrice') {
+                    if (_GlobVar.priceStatus() === 'withPrice') {
                         $.each(OrderGuides, function (i, OrderGuide) {
                             var weight;
                             if (OrderGuide.isManufactured === true) {
@@ -1294,7 +1358,7 @@ function GetOrderGuides() {
                                 '<td id="deleteBtn" class="col-lg-1 text-center"><button type="button" class="btn btn-danger CartItem"><span class="glyphicon glyphicon-remove"></span></button></td></tr>'
                             );
                         });
-                       
+
                     }
 
                     else {
@@ -1322,6 +1386,7 @@ function GetOrderGuides() {
                     $('#CurrentOrder').text(OrderGuides.length);
                     DeleteItem();
                     UpdateWeight();
+                    ShowCartControls();
 
                 } else {
                     $('#Cart tbody > tr').remove();
@@ -1333,13 +1398,12 @@ function GetOrderGuides() {
                             class: 'alert alert-danger text-center',
                         });
                     $('#CartMsg').append('<button id="hideCartMsg" type="button" class="close" aria-hidden="true"> × </button>');
-                    ShowCartControls();
                     ShowEmptyCartMsg();
 
                 }
 
             },
-            error: function() {
+            error: function () {
                 res.container.find(res.loader).remove();
                 $('.loader').attr('style', 'display:none');
                 ShowErrorMsg('Unable to fetch current order. Please Try Again.');
@@ -1349,13 +1413,15 @@ function GetOrderGuides() {
 
 
     $('#Update').on('click', function () {
+        HideRightBody();
         $('html, body').animate({ scrollTop: 0 }, 'fast');
         UpdateCart();
     });
 
     $('#checkout').click(function () {
-        var priceStatus = $('#Cart').data('value');
 
+        HideRightBody();
+      
         $('html, body').animate({ scrollTop: 0 }, 'fast');
         var CurrentOrder = [];
 
@@ -1397,7 +1463,7 @@ function GetOrderGuides() {
                     }
                     else {
 
-                        if (priceStatus === 'withPrice') {
+                        if (_GlobVar.priceStatus() === 'withPrice') {
 
                             var quantity = Number($(this).find('#quantity').val());
                             var Price = Number($(this).find('#Price').text());
@@ -1458,7 +1524,7 @@ function GetOrderGuides() {
                     }
                 });
 
-                if (priceStatus === 'withPrice') {
+                if (_GlobVar.priceStatus() === 'withPrice') {
                     $('#delColumn').remove();
                     $('#CartHeader tr').append('<th id="extendedHeader">Extended</th>');
                     $('#Footer > tr').remove();
@@ -1480,6 +1546,8 @@ function GetOrderGuides() {
                 $('.loader').attr('style', 'display:none');
                 ShowErrorMsg('Network Error. Please Try again.');
             }
+        }).pipe(function () {
+            FadeInRightBody();
         });
     });
 
@@ -1490,9 +1558,9 @@ function GetOrderGuides() {
 
     $('#backToCurrentOrder').click(function () {
 
-        var priceStatus = $('#Cart').data('value');
+        HideRightBody();
 
-        if (priceStatus === 'withPrice') {
+        if (_GlobVar.priceStatus() === 'withPrice') {
             $('#extendedHeader').replaceWith('<th id ="delColumn">Remove</th>');
             $('#extd').remove();
         }
@@ -1503,15 +1571,21 @@ function GetOrderGuides() {
         HideOrderControls();
         ShowSessionCartControls();
         $('#CartMsg').hide();
+
+        FadeInRightBody();
     });
 
-    $('#continueCheckout').click(function() {
+    $('#continueCheckout').click(function () {
+        HideRightBody();
+
         $('html, body').animate({ scrollTop: 0 }, 'fast');
         $('#checkoutControls').hide();
         ShowOrderControls();
         $('#CartMsg').hide();
         GetDeliveryAddress();
         $('#pLabel').hide();
+
+        FadeInRightBody();
     });
 
     function UpdateCart() {
@@ -1564,6 +1638,8 @@ function GetOrderGuides() {
                 $('.loader').attr('style', 'display:none');
                 ShowErrorMsg('Current Order could not be updated. Please Try again.')
             }
+        }).pipe(function () {
+            FadeInRightBody();
         });
 
     }

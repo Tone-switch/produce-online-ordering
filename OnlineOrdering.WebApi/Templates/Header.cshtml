@@ -28,7 +28,7 @@
 
 </head>
 <body>
-    <div class="container header_common">
+    <div class="container header_common" style="display:none">
         <div class="row">
             <div class="col-md-4 text-center" style="padding-top:34px">
 
@@ -58,6 +58,10 @@
             </div>
         </div>
     </div>
+    <script src="~/scripts/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript">
+        $('.container.header_common').fadeIn(1000);
+    </script>
 </body>
 </html>
 

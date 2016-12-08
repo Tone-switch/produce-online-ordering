@@ -28,6 +28,13 @@ namespace OnlineOrdering.WebApi.Controllers
             {
                 var session = HttpContext.Current.Session;
                 var sessionValue = session["UserName"];
+                var isAuthenticated = User.Identity.IsAuthenticated;
+
+                if (isAuthenticated == false)
+                {
+                    FormsAuthentication.SignOut();
+                    sessionValue = null;
+                }
 
                 if (sessionValue == null)
                 {

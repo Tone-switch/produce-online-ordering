@@ -12,6 +12,14 @@
    padding-left:3px !important;*/
 }
 
+.jumbotron{
+    font-family:'Libre Baskerville', serif;
+}
+
+.jumbotron p{
+    font-size:17px;
+}
+
 .additem {
     position:absolute;
     width:inherit;
@@ -180,6 +188,9 @@ i{
    
 }
 
+#confirmation{
+    font-family: 'Libre Baskerville', serif;
+}
 
 #Pheader{
     font-family: 'Libre Baskerville', serif;
@@ -188,6 +199,8 @@ i{
 #emptyCart{
      font-family: 'Libre Baskerville', serif;
     font-size:16px;
+    margin-left: 80px;
+    margin-top: 20px;
 }
 
 #notFound{
