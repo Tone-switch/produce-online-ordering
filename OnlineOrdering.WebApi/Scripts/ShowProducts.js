@@ -194,9 +194,12 @@ $(document).ready(function () {
     HidePtableControls();
     GetFirstCategory();
     _GlobVar.firstLogin = false;
-    GetOrderGuides();
-    AddItemToCart();
-    $('#leftNav').fadeIn(1000);
+    GetOrderGuides().pipe(function () {
+        $('#leftNav').css('display', 'none');
+    });
+    AddItemToCart().pipe(function () {
+        $('#leftNav').fadeIn(1000);
+    });
 
     $('#ChooseGuide').click(function () {
 
